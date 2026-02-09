@@ -16,6 +16,7 @@ logging.info(f"Using Model: {MODEL_NAME}")
 app = FastAPI()
 chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
+ollama_client = ollama.Client(host="http://localhost:11434")
 
 @app.get("/health")
 def health():
@@ -28,9 +29,10 @@ def query(q: str):
     results = collection.query(query_texts=[q], n_results= 1)
     context = results["documents"][0][0] if results["documents"] else ""
 
-    answer = ollama.generate(
+    answer = ollama_client.generate(
         model=MODEL_NAME,
-        prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
+        prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:",
+        
     )
 
     return {"answer": answer['response']}
