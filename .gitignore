@@ -9,6 +9,9 @@ __pycache__/
 #database folder
 db/
 
+#kubectl
+kubectl*
+
 # Distribution / packaging
 .Python
 build/
