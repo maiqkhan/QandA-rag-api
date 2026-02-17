@@ -4,8 +4,8 @@ on:
   push:
     paths:  # Only trigger on changes to these files
       - 'app.py'
-      - 'k8s.txt'
-      - 'embed.py'
+      - 'docs/*.txt'
+      - 'embed_docs.py'
 
 jobs:
   test-and-build:
@@ -25,7 +25,7 @@ jobs:
           pip install fastapi uvicorn chromadb requests
 
       - name: Rebuild embeddings
-        run: python embed.py
+        run: python embed_docs.py
 
       - name: Start API in mock mode
         run: |
