@@ -10,6 +10,9 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s"
 )
 
+USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "0") == "1"
+
+
 MODEL_NAME = os.getenv("MODEL_NAME", "tinyllama")
 logging.info(f"Using Model: {MODEL_NAME}")
 
@@ -31,11 +34,14 @@ def query(q: str):
     results = collection.query(query_texts=[q], n_results= 1)
     context = results["documents"][0][0] if results["documents"] else ""
 
-    answer = ollama_client.generate(
-        model=MODEL_NAME,
-        prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:",
-        
-    )
+    if USE_MOCK_LLM:
+        answer = {"response": context}
+    else:
+        answer = ollama_client.generate(
+            model=MODEL_NAME,
+            prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:",
+            
+        )
 
     return {"answer": answer['response']}
 
