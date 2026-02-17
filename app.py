@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 import chromadb
-import ollama
 import uuid
 import os 
 import logging 
@@ -12,6 +11,8 @@ logging.basicConfig(
 
 USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "0") == "1"
 
+if not USE_MOCK_LLM:
+    import ollama
 
 MODEL_NAME = os.getenv("MODEL_NAME", "tinyllama")
 logging.info(f"Using Model: {MODEL_NAME}")
@@ -21,7 +22,8 @@ chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-ollama_client = ollama.Client(host=OLLAMA_HOST)
+if not USE_MOCK_LLM:
+    ollama_client = ollama.Client(host=OLLAMA_HOST)
 
 @app.get("/health")
 def health():
