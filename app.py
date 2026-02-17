@@ -17,7 +17,7 @@ app = FastAPI()
 chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
 
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama-service:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 ollama_client = ollama.Client(host=OLLAMA_HOST)
 
 @app.get("/health")
